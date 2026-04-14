@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NoteItem } from '../../data/mockNotesData'
+import type { NoteItem } from '../../types/savedNotes'
 
 const props = withDefaults(
   defineProps<{

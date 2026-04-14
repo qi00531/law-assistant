@@ -1,26 +1,29 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import ExampleQuestionChips from '../components/home/ExampleQuestionChips.vue'
 import LearningTimeline from '../components/home/LearningTimeline.vue'
 import QuestionInput from '../components/home/QuestionInput.vue'
 import { useHomepageTheme } from '../composables/useHomepageTheme'
-import { exampleQuestions } from '../data/mockHomeData'
-import { notes } from '../data/mockNotesData'
-import { buildReviewContentFromNote, type ReviewModeContent } from '../data/reviewModeData'
+import { exampleQuestions } from '../data/exampleQuestions'
+import { buildReviewContentFromNote } from '../data/reviewModeData'
 import MainLayout from '../layouts/MainLayout.vue'
-import { askLegalQuestion, createLearningNote } from '../lib/api'
+import { askLegalQuestion, createLearningNote, fetchLearningNote, fetchLearningNotes } from '../lib/api'
 import type { LearningTimelineItem } from '../types/homeTimeline'
+import type { ReviewModeContent } from '../types/review'
+import type { NoteItem } from '../types/savedNotes'
 import { buildAskHistory } from '../utils/homepageHistory'
 import { buildSessionNotePayload } from '../utils/buildSessionNotePayload'
 import { findRelatedSavedNote } from '../utils/findRelatedSavedNote'
 import { mapLearningResultToTimelineItem } from '../utils/mapTimelineItem'
+import { toNoteItem } from '../utils/noteMappers'
 
 const draftQuestion = ref('')
 const timelineItems = ref<LearningTimelineItem[]>([])
 const isSubmitting = ref(false)
 const submitError = ref('')
 const activeReviewId = ref<string | null>(null)
+const savedNotes = ref<NoteItem[]>([])
 
 const { theme } = useHomepageTheme()
 
@@ -28,8 +31,22 @@ const activeReviewContent = computed<ReviewModeContent | null>(() => {
   const reviewItem = timelineItems.value.find((item) => item.id === activeReviewId.value)
   if (!reviewItem?.relatedNote) return null
 
-  const matchedNote = notes.find((note) => note.id === reviewItem.relatedNote?.id)
+  const matchedNote = savedNotes.value.find((note) => note.id === reviewItem.relatedNote?.id)
   return matchedNote ? buildReviewContentFromNote(matchedNote) : null
+})
+
+const loadSavedNotes = async () => {
+  try {
+    const list = await fetchLearningNotes()
+    const detailedNotes = await Promise.all(list.map((item) => fetchLearningNote(item.id)))
+    savedNotes.value = detailedNotes.map(toNoteItem)
+  } catch {
+    savedNotes.value = []
+  }
+}
+
+onMounted(() => {
+  void loadSavedNotes()
 })
 
 const submitQuestion = async (question: string, relation: 'root' | 'follow_up' = 'root') => {
@@ -42,7 +59,7 @@ const submitQuestion = async (question: string, relation: 'root' | 'follow_up' =
   try {
     const result = await askLegalQuestion(trimmedQuestion, buildAskHistory(timelineItems.value))
     const resolvedQuestion = result.question || trimmedQuestion
-    const relatedNote = findRelatedSavedNote(resolvedQuestion)
+    const relatedNote = findRelatedSavedNote(savedNotes.value, resolvedQuestion)
     const nextItem = mapLearningResultToTimelineItem({
       question: resolvedQuestion,
       relation,
@@ -86,6 +103,8 @@ const handleSaveItem = async (itemId: string) => {
   try {
     const payload = buildSessionNotePayload(timelineItems.value)
     const saved = await createLearningNote(payload)
+    const savedNoteItem = toNoteItem(saved)
+    savedNotes.value = [savedNoteItem, ...savedNotes.value.filter((note) => note.id !== savedNoteItem.id)]
     timelineItems.value = timelineItems.value.map((item) =>
       item.id === itemId
         ? {

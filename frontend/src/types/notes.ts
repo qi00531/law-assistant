@@ -1,11 +1,11 @@
-import type { ConfusionItem } from './ask'
+import type { ConfusionItem, StatuteItem } from './ask'
 
 export interface NoteContentPayload {
   concept: string
   elements: string[]
   example: string
   mistakes: string[]
-  statutes: string[]
+  statutes: StatuteItem[]
   confusions: ConfusionItem[]
 }
 

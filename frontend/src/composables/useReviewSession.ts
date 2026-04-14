@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 
-import type { ReviewModeContent } from '../data/reviewModeData'
+import type { ReviewModeContent } from '../types/review'
 
 const reviewTitle = ref('复习模式')
 const reviewSubtitle = ref('')

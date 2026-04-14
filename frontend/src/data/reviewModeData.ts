@@ -1,16 +1,5 @@
-import type { LearningTimelineItem } from './mockInsightsData'
-import type { NoteItem } from './mockNotesData'
-
-export interface ReviewModeContent {
-  topic: string
-  question: string
-  hint: string[]
-  rule: string[]
-  misunderstanding: string
-  explanation: string
-  statute: string
-  example: string
-}
+import type { NoteItem } from '../types/savedNotes'
+import type { ReviewModeContent } from '../types/review'
 
 export const defaultReviewModeContent: ReviewModeContent = {
   topic: '不安抗辩权',
@@ -45,22 +34,3 @@ export const buildReviewContentFromNote = (note: NoteItem): ReviewModeContent =>
   statute: note.tags.includes('民法典') ? '建议结合《中华人民共和国民法典》对应条文复习。' : '建议回到对应法条或制度规则继续核对。',
   example: note.suggestions[1] ?? `可以围绕「${note.title}」再练一个具体案例，帮助把抽象规则落到情境中。`,
 })
-
-export const buildReviewContentFromTimeline = (item: LearningTimelineItem): ReviewModeContent => {
-  const topic = item.topic
-  const segments = item.result
-    .split(/[，。；]/)
-    .map((segment) => segment.trim())
-    .filter(Boolean)
-
-  return {
-    topic,
-    question: `回到「${topic}」时，你最先应该想起的核心判断是什么？`,
-    hint: [topic, item.mood],
-    rule: segments.slice(0, 2).length > 0 ? segments.slice(0, 2) : ['先回到主题主线', '再确认关键区分点'],
-    misunderstanding: `复习「${topic}」时，不要只记住这次学习的感觉，还要回到真正的判断条件。`,
-    explanation: item.result,
-    statute: '可以在下一轮复习时补上对应法条或制度依据。',
-    example: `以「${topic}」为中心，再练一个相似问题，会更容易把这次理解固定下来。`,
-  }
-}

@@ -49,7 +49,7 @@ export const buildNotePayloadFromLearningResult = (
     elements: result.elements,
     example: result.example,
     mistakes: result.mistakes,
-    statutes: serializeStatutes(result),
+    statutes: result.statutes,
     confusions: result.confusions,
   },
 })

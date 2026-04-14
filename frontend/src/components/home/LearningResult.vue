@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LearningModule } from '../../data/mockHomeData'
+import type { LearningModule } from '../../types/learning'
 
 import LearningModuleCard from './LearningModuleCard.vue'
 

@@ -1,5 +1,6 @@
 import type { NoteCreateRequest } from '../types/notes'
 import type { LearningTimelineItem } from '../types/homeTimeline'
+import type { StatuteItem } from '../types/ask'
 
 const uniq = (items: string[]) => Array.from(new Set(items.map((item) => item.trim()).filter(Boolean)))
 const serializeStatute = (title: string, article: string, content: string) =>
@@ -59,6 +60,19 @@ const inferTags = (items: LearningTimelineItem[]) => {
   return Array.from(tags).slice(0, 3)
 }
 
+const uniqStatutes = (items: StatuteItem[]) => {
+  const seen = new Set<string>()
+
+  return items.filter((item) => {
+    const key = serializeStatute(item.title, item.article, item.content)
+    if (!key || seen.has(key)) {
+      return false
+    }
+    seen.add(key)
+    return true
+  })
+}
+
 export const buildSessionNotePayload = (items: LearningTimelineItem[]): NoteCreateRequest => {
   const [rootItem, ...rest] = items
   const allResults = items.map((item) => item.result)
@@ -80,13 +94,7 @@ export const buildSessionNotePayload = (items: LearningTimelineItem[]): NoteCrea
         .filter(Boolean)
         .join('；'),
       mistakes: uniq(allResults.flatMap((result) => result.mistakes)),
-      statutes: uniq(
-        allResults.flatMap((result) =>
-          result.statutes.map((statute) =>
-            serializeStatute(statute.title, statute.article, statute.content),
-          ),
-        ),
-      ),
+      statutes: uniqStatutes(allResults.flatMap((result) => result.statutes)),
       confusions: allResults.flatMap((result) => result.confusions),
     },
   }

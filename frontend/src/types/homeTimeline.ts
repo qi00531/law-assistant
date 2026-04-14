@@ -1,5 +1,5 @@
-import type { LearningModule } from '../data/mockHomeData'
 import type { LearningResultResponse } from './ask'
+import type { LearningModule } from './learning'
 
 export type TimelineRelation = 'root' | 'follow_up'
 

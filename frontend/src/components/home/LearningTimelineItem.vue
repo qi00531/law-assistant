@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { ReviewModeContent } from '../../data/reviewModeData'
 import type { LearningTimelineItem } from '../../types/homeTimeline'
+import type { ReviewModeContent } from '../../types/review'
 import ReviewMode from '../ReviewMode.vue'
 import LearningModuleCard from './LearningModuleCard.vue'
 import ReviewHintBar from './ReviewHintBar.vue'

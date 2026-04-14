@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { motion } from 'motion-v'
-import { defaultReviewModeContent, type ReviewModeContent } from '../data/reviewModeData'
+import { defaultReviewModeContent } from '../data/reviewModeData'
+import type { ReviewModeContent } from '../types/review'
 
 type ReviewStage = 'question' | 'hint' | 'rule' | 'misunderstanding' | 'reveal'
 

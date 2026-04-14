@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NoteTag } from '../../data/mockNotesData'
+import type { NoteTag } from '../../types/savedNotes'
 
 defineProps<{
   searchTerm: string

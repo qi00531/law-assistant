@@ -1,5 +1,5 @@
-import { notes } from '../data/mockNotesData'
 import type { RelatedSavedNote } from '../types/homeTimeline'
+import type { NoteItem } from '../types/savedNotes'
 
 const normalize = (value: string) =>
   value
@@ -25,7 +25,7 @@ const score = (left: string, right: string) => {
   return intersection.length / union.size
 }
 
-export const findRelatedSavedNote = (question: string): RelatedSavedNote | null => {
+export const findRelatedSavedNote = (notes: NoteItem[], question: string): RelatedSavedNote | null => {
   const normalized = normalize(question)
 
   const match = notes.find((note) => {

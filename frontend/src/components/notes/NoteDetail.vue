@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 
-import type { NoteItem } from '../../data/mockNotesData'
-import type { ReviewModeContent } from '../../data/reviewModeData'
-
 import ReviewMode from '../ReviewMode.vue'
+import type { ReviewModeContent } from '../../types/review'
+import type { NoteItem } from '../../types/savedNotes'
 
 const emit = defineEmits<{
   (event: 'start-review'): void

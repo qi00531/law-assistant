@@ -1,5 +1,5 @@
-import type { LearningModule } from '../data/mockHomeData'
 import type { LearningResultResponse } from '../types/ask'
+import type { LearningModule } from '../types/learning'
 
 const toParagraphs = (items: string[], emptyFallback: string) => {
   const cleaned = items.map((item) => item.trim()).filter(Boolean)
