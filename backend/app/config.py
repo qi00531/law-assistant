@@ -38,6 +38,10 @@ def _resolve_path(raw_value: str, default_path: Path) -> Path:
         return candidate
     return REPO_ROOT / candidate
 
+
+def _split_csv_env(raw_value: str) -> list[str]:
+    return [item.strip() for item in raw_value.split(",") if item.strip()]
+
 LLM_ENABLED = os.getenv("LLM_ENABLED", "false").lower() == "true"
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai_compatible")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
@@ -51,3 +55,8 @@ CHROMA_PERSIST_DIR = _resolve_path(
     BASE_DIR / "data" / "chroma",
 )
 LAWS_SOURCE_DIR = REPO_ROOT / "data" / "laws"
+CORS_ALLOW_ORIGINS = _split_csv_env(os.getenv("CORS_ALLOW_ORIGINS", ""))
+CORS_ALLOW_ORIGIN_REGEX = os.getenv(
+    "CORS_ALLOW_ORIGIN_REGEX",
+    r"^https?://(127\.0\.0\.1|localhost|0\.0\.0\.0|(\d{1,3}\.){3}\d{1,3}|[A-Za-z0-9.-]+)(:\d+)?$",
+)

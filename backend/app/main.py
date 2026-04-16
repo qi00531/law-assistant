@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.ask import router as ask_router
 from app.api.notes import router as notes_router
+from app.config import CORS_ALLOW_ORIGINS, CORS_ALLOW_ORIGIN_REGEX
 from app.db.init_db import init_db
 
 
@@ -22,7 +23,8 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"^https?://(127\.0\.0\.1|localhost)(:\d+)?$",
+    allow_origins=CORS_ALLOW_ORIGINS,
+    allow_origin_regex=CORS_ALLOW_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
