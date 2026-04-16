@@ -1,6 +1,7 @@
 APP_NAME := law-assistant
 APP_DIR := $(CURDIR)
 SERVICE_USER ?= $(shell whoami)
+PYTHON_BIN ?= $(shell python3 -c "import sys; print(sys.executable)")
 RENDER_DIR := $(APP_DIR)/.systemd
 BACKEND_SERVICE := $(APP_NAME)-backend.service
 FRONTEND_SERVICE := $(APP_NAME)-frontend.service
@@ -30,7 +31,7 @@ install-frontend:
 	cd frontend && npm install
 
 render-services:
-	bash scripts/render_systemd.sh "$(APP_DIR)" "$(SERVICE_USER)" "$(RENDER_DIR)"
+	bash scripts/render_systemd.sh "$(APP_DIR)" "$(SERVICE_USER)" "$(RENDER_DIR)" "$(PYTHON_BIN)"
 
 install-services: render-services
 	sudo cp "$(RENDER_DIR)/$(BACKEND_SERVICE)" "$(SYSTEMD_DIR)/$(BACKEND_SERVICE)"

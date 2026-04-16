@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=__SERVICE_USER__
 WorkingDirectory=__APP_DIR__
-ExecStart=/usr/bin/env bash -lc 'uvicorn main:app --host 0.0.0.0 --port 8000'
+ExecStart=__PYTHON_BIN__ -m uvicorn main:app --host 0.0.0.0 --port 8000
 Restart=always
 RestartSec=3
 Environment=PYTHONUNBUFFERED=1
