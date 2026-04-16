@@ -3,7 +3,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.schemas.ask import ConfusionItem
+from app.schemas.ask import ConfusionItem, StatuteItem
 
 
 class NoteContent(BaseModel):
@@ -11,7 +11,7 @@ class NoteContent(BaseModel):
     elements: list[str]
     example: str
     mistakes: list[str]
-    statutes: list[str]
+    statutes: list[StatuteItem]
     confusions: list[ConfusionItem]
 
 
