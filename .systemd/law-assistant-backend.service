@@ -1,0 +1,15 @@
+[Unit]
+Description=Law Assistant Backend
+After=network.target
+
+[Service]
+Type=simple
+User=qisen
+WorkingDirectory=/home/qisen/projects/law-assistant
+ExecStart=/usr/bin/env bash -lc 'uvicorn main:app --host 0.0.0.0 --port 8000'
+Restart=always
+RestartSec=3
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

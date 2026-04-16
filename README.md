@@ -44,6 +44,46 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 - API 文档：http://127.0.0.1:8000/docs
 - 健康检查：http://127.0.0.1:8000/health
 
+## Make + systemd
+
+如果服务器没有 Docker，可以直接使用仓库自带的 `Makefile` 和 `systemd` 模板，一次性启动前后端并支持宕机自动重启、开机自启。
+
+在仓库根目录执行：
+
+```bash
+make up
+```
+
+它会做这些事：
+
+1. 安装后端依赖：`pip install -r requirements.txt`
+2. 安装前端依赖：`cd frontend && npm install`
+3. 生成 systemd service 文件到 `.systemd/`
+4. 安装 service 文件到 `/etc/systemd/system/`
+5. 执行 `systemctl enable`
+6. 启动前后端服务
+
+常用命令：
+
+```bash
+make status
+make logs
+make restart
+make down
+```
+
+当前默认服务：
+
+- 后端：`uvicorn main:app --host 0.0.0.0 --port 8000`
+- 前端：`cd frontend && npm run dev -- --host 0.0.0.0 --port 5173`
+
+生成的模板文件位置：
+
+```text
+deploy/systemd/law-assistant-backend.service.template
+deploy/systemd/law-assistant-frontend.service.template
+```
+
 ## Environment
 
 后端环境变量文件位置仍然是：
