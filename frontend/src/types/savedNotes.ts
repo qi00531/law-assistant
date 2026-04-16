@@ -8,6 +8,7 @@ export interface NoteItem {
   lastLearningTime: string
   lastLearningOrder: number
   createdAt: string
+  updatedAt: string
   importance: number
   needsReview?: boolean
   category: string

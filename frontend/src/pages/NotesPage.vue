@@ -133,8 +133,8 @@ const handleNoteUpdate = (payload: { id: string; title: string; summary: string 
 
 <template>
   <MainLayout>
-    <section class="grid gap-6 xl:grid-cols-[minmax(360px,460px)_minmax(0,1fr)]">
-      <div class="space-y-5">
+    <section class="grid gap-6 xl:min-h-[calc(100vh-3rem)] xl:grid-cols-[minmax(360px,460px)_minmax(0,1fr)]">
+      <div class="space-y-5 xl:flex xl:min-h-0 xl:flex-col">
         <NotesToolbar
           :search-term="searchTerm"
           :selected-tag="selectedTag"
@@ -147,23 +147,27 @@ const handleNoteUpdate = (payload: { id: string; title: string; summary: string 
         <p v-if="loadError" class="rounded-2xl border border-rose-200 bg-rose-50/80 px-4 py-3 text-sm leading-7 text-rose-700">
           {{ loadError }}
         </p>
-        <NotesList
-          :is-loading="isLoading"
-          :notes="filteredNotes"
-          :selected-note-id="selectedNoteId"
-          :layout-mode="layoutMode"
-          @select="selectedNoteId = $event"
-          @review="handleReviewSelect"
-        />
+        <div class="xl:min-h-0 xl:flex-1 xl:overflow-y-auto xl:pr-2">
+          <NotesList
+            :is-loading="isLoading"
+            :notes="filteredNotes"
+            :selected-note-id="selectedNoteId"
+            :layout-mode="layoutMode"
+            @select="selectedNoteId = $event"
+            @review="handleReviewSelect"
+          />
+        </div>
       </div>
 
-      <NoteDetail
-        :note="selectedNote"
-        :review-content="reviewContent"
-        @close-review="closeReviewMode"
-        @review-complete="handleReviewComplete"
-        @update-note="handleNoteUpdate"
-      />
+      <div class="xl:min-h-0 xl:overflow-y-auto xl:pr-1">
+        <NoteDetail
+          :note="selectedNote"
+          :review-content="reviewContent"
+          @close-review="closeReviewMode"
+          @review-complete="handleReviewComplete"
+          @update-note="handleNoteUpdate"
+        />
+      </div>
     </section>
   </MainLayout>
 </template>

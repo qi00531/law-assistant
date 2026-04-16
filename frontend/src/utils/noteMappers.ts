@@ -22,6 +22,7 @@ export const toNoteItem = (note: NoteResponse): NoteItem => ({
   lastLearningTime: formatRelativeLabel(note.updated_at),
   lastLearningOrder: -new Date(note.updated_at).getTime(),
   createdAt: formatDateLabel(note.created_at),
+  updatedAt: note.updated_at,
   importance: Math.max(note.tags.length, 1),
   needsReview: note.content.elements.length > 0,
   category: note.tags[0] ?? '法律学习',

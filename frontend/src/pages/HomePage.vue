@@ -45,6 +45,13 @@ const loadSavedNotes = async () => {
   }
 }
 
+const resetTimeline = () => {
+  timelineItems.value = []
+  activeReviewId.value = null
+  submitError.value = ''
+  draftQuestion.value = ''
+}
+
 onMounted(() => {
   void loadSavedNotes()
 })
@@ -142,57 +149,83 @@ const handleReviewComplete = (action: 'remembered' | 'review-later' | 'practice-
 </script>
 
 <template>
-  <MainLayout>
-    <section :class="theme === 'dark' ? 'home-theme-dark' : 'home-theme-light'" class="home-timeline-layout">
-      <div
-        class="home-timeline-scroll"
-        :class="timelineItems.length > 0 ? 'space-y-6' : 'flex items-center justify-center'"
-      >
-        <div v-if="timelineItems.length === 0" class="mx-auto flex w-full max-w-5xl flex-col gap-4 py-10">
-          <div class="text-center">
-            <h1
-              class="font-serif text-4xl font-semibold tracking-[0.18em] text-slate-950 sm:text-5xl"
-              style="text-shadow: 0 8px 30px rgba(15, 23, 42, 0.08)"
-            >
-              法小智
-            </h1>
+  <MainLayout shell-class="page-shell-home">
+    <div class="home-page">
+      <section :class="theme === 'dark' ? 'home-theme-dark' : 'home-theme-light'" class="home-timeline-layout flex-1">
+        <div class="home-timeline-viewport">
+          <div
+            class="home-timeline-scroll"
+            :class="timelineItems.length > 0 ? 'space-y-6' : 'flex items-center justify-center'"
+          >
+            <div v-if="timelineItems.length > 0" class="flex items-center justify-between">
+              <div class="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                <span>学习轨迹</span>
+                <span class="text-slate-300">·</span>
+                <span>{{ timelineItems.length }} 条记录</span>
+              </div>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:bg-white"
+                @click="resetTimeline"
+              >
+                返回首页
+              </button>
+            </div>
+            <div v-if="timelineItems.length === 0" class="mx-auto flex w-full max-w-5xl flex-col gap-4 py-10">
+              <div class="text-center">
+                <h1
+                  class="font-serif text-4xl font-semibold tracking-[0.18em] text-slate-950 sm:text-5xl"
+                  style="text-shadow: 0 8px 30px rgba(15, 23, 42, 0.08)"
+                >
+                  法小智
+                </h1>
+              </div>
+              <ExampleQuestionChips :questions="exampleQuestions" @select="handleExampleSelect" />
+              <QuestionInput
+                v-model="draftQuestion"
+                :button-text="isSubmitting ? '分析中…' : '发送问题'"
+                :disabled="isSubmitting"
+                placeholder="输入法律问题，例如：什么是不安抗辩权"
+                @submit="handleDraftSubmit"
+              />
+            </div>
+
+            <template v-if="timelineItems.length > 0">
+              <LearningTimeline
+                :items="timelineItems"
+                :active-review-id="activeReviewId"
+                :review-content="activeReviewContent"
+                @start-review="activeReviewId = $event"
+                @complete-review="handleReviewComplete"
+                @save-item="handleSaveItem"
+              />
+              <div class="home-fixed-composer space-y-4">
+                <ExampleQuestionChips :questions="exampleQuestions" @select="handleExampleSelect" />
+                <QuestionInput
+                  v-model="draftQuestion"
+                  :button-text="isSubmitting ? '分析中…' : '发送问题'"
+                  :disabled="isSubmitting"
+                  placeholder="输入法律问题，例如：什么是不安抗辩权"
+                  @submit="handleDraftSubmit"
+                />
+              </div>
+            </template>
+
+            <p v-if="submitError" class="rounded-2xl border border-rose-200 bg-rose-50/80 px-4 py-3 text-sm leading-7 text-rose-700">
+              {{ submitError }}
+            </p>
           </div>
-          <ExampleQuestionChips :questions="exampleQuestions" @select="handleExampleSelect" />
-          <QuestionInput
-            v-model="draftQuestion"
-            :button-text="isSubmitting ? '分析中…' : '发送问题'"
-            :disabled="isSubmitting"
-            placeholder="输入法律问题，例如：什么是不安抗辩权"
-            @submit="handleDraftSubmit"
-          />
         </div>
-
-        <template v-if="timelineItems.length > 0">
-          <LearningTimeline
-            :items="timelineItems"
-            :active-review-id="activeReviewId"
-            :review-content="activeReviewContent"
-            @start-review="activeReviewId = $event"
-            @complete-review="handleReviewComplete"
-            @save-item="handleSaveItem"
-          />
-        </template>
-
-        <p v-if="submitError" class="rounded-2xl border border-rose-200 bg-rose-50/80 px-4 py-3 text-sm leading-7 text-rose-700">
-          {{ submitError }}
-        </p>
-      </div>
-
-      <div v-if="timelineItems.length > 0" class="home-fixed-composer space-y-4">
-        <ExampleQuestionChips :questions="exampleQuestions" @select="handleExampleSelect" />
-        <QuestionInput
-          v-model="draftQuestion"
-          :button-text="isSubmitting ? '分析中…' : '发送问题'"
-          :disabled="isSubmitting"
-          placeholder="输入法律问题，例如：什么是不安抗辩权"
-          @submit="handleDraftSubmit"
-        />
-      </div>
-    </section>
+      </section>
+    </div>
   </MainLayout>
 </template>
+
+<style scoped>
+.home-page {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+</style>
